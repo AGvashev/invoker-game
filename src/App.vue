@@ -22,6 +22,7 @@
          <SpellsPanel 
          :settings = keys
          :allSpells = spells
+         :legacyKey = legacy
          />
         </div>
         <div class="rightside">
@@ -82,7 +83,6 @@ export default {
             }
           },
           spells: {
-
           }
       }
   },
@@ -182,7 +182,7 @@ export default {
                 button: 'D'
             },
             DeafeningBlast: {
-                name: 'Deafening Blas',
+                name: 'Deafening Blast',
                 button: 'B'
             },
         }
@@ -203,7 +203,7 @@ export default {
           castBtns: [this.keys.Quas.button, this.keys.Quas.button, this.keys.Wex.button]
         },
         IceWall: {
-          name: 'Ice wall',
+          name: 'Ice Wall',
           image: require('@/assets/spells/icewall.svg'),
           castBtns: [this.keys.Quas.button, this.keys.Quas.button, this.keys.Exort.button]
         },
@@ -223,22 +223,22 @@ export default {
           castBtns: [this.keys.Wex.button, this.keys.Wex.button, this.keys.Exort.button]
         },
         SunStrike: {
-          name: 'Sun strike',
+          name: 'Sun Strike',
           image: require('@/assets/spells/sunstrike.svg'),
           castBtns: [this.keys.Exort.button, this.keys.Exort.button, this.keys.Exort.button]
         },
         ForgeSpirit: {
-          name: 'Forge spirit',
+          name: 'Forge Spirit',
           image: require('@/assets/spells/forgespirit.svg'),
           castBtns: [this.keys.Exort.button, this.keys.Exort.button, this.keys.Quas.button]
         },
         ChaosMeteor: {
-          name: 'Chaos meteor',
+          name: 'Chaos Meteor',
           image: require('@/assets/spells/chaosmeteor.svg'),
           castBtns: [this.keys.Exort.button, this.keys.Exort.button, this.keys.Wex.button]
         },
-        DefeaningBlast: {
-          name: 'Defeaning blast',
+        DeafeningBlast: {
+          name: 'Deafening Blast',
           image: require('@/assets/spells/defeaningblast.svg'),
           castBtns: [this.keys.Quas.button, this.keys.Wex.button, this.keys.Exort.button]
         }
@@ -249,7 +249,7 @@ export default {
     setTimeout(() => {
       this.preloader = false
       this.spellCastBtnUpdate()
-    }, 5000);
+    }, 2000);
   }
 }
 </script>

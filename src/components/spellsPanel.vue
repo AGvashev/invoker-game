@@ -24,16 +24,16 @@
                 <img src="@/assets/exort.jpg" class="spell__image" alt="Exort">
             </div>
             <div class="spell first__spell__panel" @click="firstSpellClick">
-                <div class="spell__button">{{ settings.FirstSpell.button }}</div>
+                <div class="spell__button">{{ !legacyKey ? settings.FirstSpell.button : castPanelSpell[1].button }}</div>
                 <img 
-                :src="castPanelSpell[1] != null ? castPanelSpell[1].Image : ' '" 
+                :src="castPanelSpell[1].name != null ? castPanelSpell[1].Image : ' '" 
                 class="spell__image"
                 >
             </div>
             <div class="spell second__spell__panel" @click="secondSpellClick">
-                <div class="spell__button">{{ settings.SecondSpell.button }}</div>
+                <div class="spell__button">{{ !legacyKey ? settings.SecondSpell.button : castPanelSpell[0].button}}</div>
                 <img 
-                :src="castPanelSpell[0] != null ? castPanelSpell[0].Image : ' '" 
+                :src="castPanelSpell[0].name != null ? castPanelSpell[0].Image : ' '" 
                 class="spell__image"
                 >
             </div>
@@ -49,26 +49,27 @@
 
 export default {
   name: 'SpellsPanel',
-  props: ['settings', 'allSpells'],
+  props: {
+      settings: Object,
+      allSpells: Object,
+      legacyKey: Boolean
+  },
   data() {
       return {
           castPanel: [null, null, null],
-          castPanelSpell: [null, null]
+          castPanelSpell: [{name: null}, {name: null}]
       }
   },
   methods: {
       quasClick() {
-        console.log('Quas click')
         this.castPanel.shift()
         this.castPanel.push(this.settings.Quas.button)
       },
       wexClick() {
-        console.log('Wex click')
         this.castPanel.shift()
         this.castPanel.push(this.settings.Wex.button)
       },
       exortClick() {
-        console.log('Exort click')
         this.castPanel.shift()
         this.castPanel.push(this.settings.Exort.button)
       },
@@ -79,19 +80,62 @@ export default {
         console.log('Second spell click')
       },
       invokeClick() {
-        console.log('Invoke click')
         if (this.castPanel[0] == null || this.castPanel[1] == null || this.castPanel[2] == null) {
             return
         } else {
             for (let spell in this.allSpells) {
                 let castPanelSort = this.castPanel.slice()
                 if (this.allSpells[spell].castBtns.sort().join(',') == castPanelSort.sort().join(',')) {
+                    if (this.castPanelSpell[1].name == this.allSpells[spell].name) return
                     this.castPanelSpell.shift()
-                    this.castPanelSpell.push({ Name: this.allSpells[spell].name, Image: this.allSpells[spell].image})
+                    if (this.legacyKey) {
+                        this.castPanelSpell.push({ name: this.allSpells[spell].name, Image: this.allSpells[spell].image, button: this.settings[spell].button})
+                    } else {
+                        this.castPanelSpell.push({ name: this.allSpells[spell].name, Image: this.allSpells[spell].image})
+                    }
                 }
             }
         }
+      },
+      keyPressed(key) {
+        const keyPressedNow = key.key
+        if (keyPressedNow.toUpperCase() == this.settings.Quas.button) {
+            this.quasClick()
+        }else if (keyPressedNow.toUpperCase() == this.settings.Wex.button) {
+            this.wexClick()
+        }else if (keyPressedNow.toUpperCase() == this.settings.Exort.button) {
+            this.exortClick()
+        }else if (keyPressedNow.toUpperCase() == this.settings.Invoke.button) {
+            this.invokeClick()
+        }
+        if (!this.legacyKey) {
+            if (keyPressedNow.toUpperCase() == this.settings.FirstSpell.button) {
+                this.firstSpellClick()
+            } else if (keyPressedNow.toUpperCase() == this.settings.SecondSpell.button) {
+                this.secondSpellClick()
+            }
+        } else {
+            if (keyPressedNow.toUpperCase() == this.castPanelSpell[0].button) {
+                this.secondSpellClick()
+            } else if (keyPressedNow.toUpperCase() == this.castPanelSpell[1].button) {
+                this.firstSpellClick()  
+            }
+        }
       }
+  },
+  mounted() {
+    window.addEventListener('keydown', this.keyPressed)
+  },
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.keyPressed)
+  },
+  beforeUpdate() {
+    if (this.legacyKey) {
+        for (let spell in this.settings) {
+            if (this.settings[spell].name == this.castPanelSpell[0].name) this.castPanelSpell[0].button = this.settings[spell].button
+            if (this.settings[spell].name == this.castPanelSpell[1].name) this.castPanelSpell[1].button = this.settings[spell].button
+        }  
+    }
   }
 }
 </script>
@@ -101,6 +145,7 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    margin-bottom: 50px;
 }
 
 .cast__circle {
