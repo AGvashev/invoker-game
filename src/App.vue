@@ -19,11 +19,15 @@
             </div>
         </div>
         <div class="middleside">
-         
+         <SpellsPanel 
+         :settings = keys
+         :allSpells = spells
+         />
         </div>
         <div class="rightside">
           <Spells
           :settings = keys
+          :allSpells = spells
           />
         </div>
       </div>
@@ -34,12 +38,14 @@
 <script>
 import Settings from './components/settings.vue'
 import Spells from './components/spells.vue'
+import SpellsPanel from './components/spellsPanel.vue'
 
 export default {
   name: 'App',
   components: {
     Settings,
-    Spells
+    Spells,
+    SpellsPanel
   },
   data() {
       return {
@@ -48,18 +54,22 @@ export default {
           keys: {
             Quas: {
                 name: 'Quas',
+                image: require('@/assets/quas.jpg'),
                 button: 'Q'
             },
             Wex: {
                 name: 'Wex',
+                image: require('@/assets/wex.jpg'),
                 button: 'W'
             },
             Exort: {
                 name: 'Exort',
+                image: require('@/assets/exort.jpg'),
                 button: 'E'
             },
             Invoke: {
                 name: 'Invoke',
+                image: require('@/assets/invoke.jpg'),
                 button: 'R'
             },
             FirstSpell: {
@@ -70,6 +80,9 @@ export default {
                 name: 'Second spell',
                 button: 'F'
             }
+          },
+          spells: {
+
           }
       }
   },
@@ -77,19 +90,23 @@ export default {
     settingReset() {
       this.keys = {
             Quas: {
-                name: 'Quas',
-                button: 'Q'
+              name: 'Quas',
+              image: require('@/assets/quas.jpg'),
+              button: 'Q'
             },
             Wex: {
                 name: 'Wex',
+                image: require('@/assets/wex.jpg'),
                 button: 'W'
             },
             Exort: {
                 name: 'Exort',
+                image: require('@/assets/exort.jpg'),
                 button: 'E'
             },
             Invoke: {
                 name: 'Invoke',
+                image: require('@/assets/invoke.jpg'),
                 button: 'R'
             },
             FirstSpell: {
@@ -108,21 +125,25 @@ export default {
     legacyKey() {
       if (this.legacy) {
         this.keys = {
-          Quas: {
-                name: 'Quas',
-                button: 'Q'
+            Quas: {
+              name: 'Quas',
+              image: require('@/assets/quas.jpg'),
+              button: 'Q'
             },
             Wex: {
-                name: 'Wex',
-                button: 'W'
+              name: 'Wex',
+              image: require('@/assets/wex.jpg'),
+              button: 'W'
             },
             Exort: {
-                name: 'Exort',
-                button: 'E'
+              name: 'Exort',
+              image: require('@/assets/exort.jpg'),
+              button: 'E'
             },
             Invoke: {
-                name: 'Invoke',
-                button: 'R'
+              name: 'Invoke',
+              image: require('@/assets/invoke.jpg'),
+              button: 'R'
             },
             ColdSnap: {
                 name: 'Cold Snap',
@@ -168,11 +189,66 @@ export default {
       } else {
         this.settingReset()
       }
+    },
+    spellCastBtnUpdate() {
+      this.spells = {
+        ColdSnap: {
+          name: 'Cold Snap',
+          image: require('@/assets/spells/coldsnap.svg'),
+          castBtns: [this.keys.Quas.button, this.keys.Quas.button, this.keys.Quas.button]
+        },
+        GhostWalk: {
+          name: 'Ghost Walk',
+          image: require('@/assets/spells/ghostwalk.svg'),
+          castBtns: [this.keys.Quas.button, this.keys.Quas.button, this.keys.Wex.button]
+        },
+        IceWall: {
+          name: 'Ice wall',
+          image: require('@/assets/spells/icewall.svg'),
+          castBtns: [this.keys.Quas.button, this.keys.Quas.button, this.keys.Exort.button]
+        },
+        EMP: {
+          name: 'EMP',
+          image: require('@/assets/spells/emp.svg'),
+          castBtns: [this.keys.Wex.button, this.keys.Wex.button, this.keys.Wex.button]
+        },
+        Tornado: {
+          name: 'Tornado',
+          image: require('@/assets/spells/tornado.svg'),
+          castBtns: [this.keys.Wex.button, this.keys.Wex.button, this.keys.Quas.button]
+        },
+        Alacrity: {
+          name: 'Alacrity',
+          image: require('@/assets/spells/alacrity.svg'),
+          castBtns: [this.keys.Wex.button, this.keys.Wex.button, this.keys.Exort.button]
+        },
+        SunStrike: {
+          name: 'Sun strike',
+          image: require('@/assets/spells/sunstrike.svg'),
+          castBtns: [this.keys.Exort.button, this.keys.Exort.button, this.keys.Exort.button]
+        },
+        ForgeSpirit: {
+          name: 'Forge spirit',
+          image: require('@/assets/spells/forgespirit.svg'),
+          castBtns: [this.keys.Exort.button, this.keys.Exort.button, this.keys.Quas.button]
+        },
+        ChaosMeteor: {
+          name: 'Chaos meteor',
+          image: require('@/assets/spells/chaosmeteor.svg'),
+          castBtns: [this.keys.Exort.button, this.keys.Exort.button, this.keys.Wex.button]
+        },
+        DefeaningBlast: {
+          name: 'Defeaning blast',
+          image: require('@/assets/spells/defeaningblast.svg'),
+          castBtns: [this.keys.Quas.button, this.keys.Wex.button, this.keys.Exort.button]
+        }
+      }
     }
   },
   mounted() {
     setTimeout(() => {
       this.preloader = false
+      this.spellCastBtnUpdate()
     }, 5000);
   }
 }
@@ -206,6 +282,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color:rgb(22,20,23);
+  z-index: 999999;
 }
 
 .preloader img {
