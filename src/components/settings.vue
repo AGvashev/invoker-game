@@ -17,7 +17,9 @@
 
 export default {
   name: 'Settings',
-  props: ['settings']
+  props: {
+      settings: Object,
+  },
 }
 </script>
 

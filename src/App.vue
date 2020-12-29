@@ -19,11 +19,23 @@
             </div>
         </div>
         <div class="middleside">
-         <SpellsPanel 
-         :settings = keys
-         :allSpells = spells
-         :legacyKey = legacy
-         />
+          Выбери режим игры: {{gameMode}}
+          <div v-if="gameMode == 'none'">
+            <button @click="gameMode = 'Survival'">Survival</button>
+            <button @click="gameMode = 'Classic'">Classic</button>
+            <button @click="gameMode = '3xCombo'">3x Combo</button>
+            <button @click="gameMode = 'Endless'">Endless</button>
+          </div>
+          
+
+          <button @click="gameMode = 'none'">Main menu</button>
+          <Game
+          v-if="gameMode != 'none'"
+          :gameMode = gameMode
+          :settings = keys
+          :allSpells = spells
+          :legacyKey = legacy
+           />
         </div>
         <div class="rightside">
           <Spells
@@ -39,19 +51,20 @@
 <script>
 import Settings from './components/settings.vue'
 import Spells from './components/spells.vue'
-import SpellsPanel from './components/spellsPanel.vue'
+import Game from './components/game.vue'
 
 export default {
   name: 'App',
   components: {
     Settings,
     Spells,
-    SpellsPanel
+    Game,
   },
   data() {
       return {
           legacy: false,
           preloader: true,
+          gameMode: 'none',
           keys: {
             Quas: {
                 name: 'Quas',
@@ -195,52 +208,62 @@ export default {
         ColdSnap: {
           name: 'Cold Snap',
           image: require('@/assets/spells/coldsnap.svg'),
-          castBtns: [this.keys.Quas.button, this.keys.Quas.button, this.keys.Quas.button]
+          castBtns: [this.keys.Quas.button, this.keys.Quas.button, this.keys.Quas.button],
+          casted: false
         },
         GhostWalk: {
           name: 'Ghost Walk',
           image: require('@/assets/spells/ghostwalk.svg'),
-          castBtns: [this.keys.Quas.button, this.keys.Quas.button, this.keys.Wex.button]
+          castBtns: [this.keys.Quas.button, this.keys.Quas.button, this.keys.Wex.button],
+          casted: false
         },
         IceWall: {
           name: 'Ice Wall',
           image: require('@/assets/spells/icewall.svg'),
-          castBtns: [this.keys.Quas.button, this.keys.Quas.button, this.keys.Exort.button]
+          castBtns: [this.keys.Quas.button, this.keys.Quas.button, this.keys.Exort.button],
+          casted: false
         },
         EMP: {
           name: 'EMP',
           image: require('@/assets/spells/emp.svg'),
-          castBtns: [this.keys.Wex.button, this.keys.Wex.button, this.keys.Wex.button]
+          castBtns: [this.keys.Wex.button, this.keys.Wex.button, this.keys.Wex.button],
+          casted: false
         },
         Tornado: {
           name: 'Tornado',
           image: require('@/assets/spells/tornado.svg'),
-          castBtns: [this.keys.Wex.button, this.keys.Wex.button, this.keys.Quas.button]
+          castBtns: [this.keys.Wex.button, this.keys.Wex.button, this.keys.Quas.button],
+          casted: false
         },
         Alacrity: {
           name: 'Alacrity',
           image: require('@/assets/spells/alacrity.svg'),
-          castBtns: [this.keys.Wex.button, this.keys.Wex.button, this.keys.Exort.button]
+          castBtns: [this.keys.Wex.button, this.keys.Wex.button, this.keys.Exort.button],
+          casted: false
         },
         SunStrike: {
           name: 'Sun Strike',
           image: require('@/assets/spells/sunstrike.svg'),
-          castBtns: [this.keys.Exort.button, this.keys.Exort.button, this.keys.Exort.button]
+          castBtns: [this.keys.Exort.button, this.keys.Exort.button, this.keys.Exort.button],
+          casted: false
         },
         ForgeSpirit: {
           name: 'Forge Spirit',
           image: require('@/assets/spells/forgespirit.svg'),
-          castBtns: [this.keys.Exort.button, this.keys.Exort.button, this.keys.Quas.button]
+          castBtns: [this.keys.Exort.button, this.keys.Exort.button, this.keys.Quas.button],
+          casted: false
         },
         ChaosMeteor: {
           name: 'Chaos Meteor',
           image: require('@/assets/spells/chaosmeteor.svg'),
-          castBtns: [this.keys.Exort.button, this.keys.Exort.button, this.keys.Wex.button]
+          castBtns: [this.keys.Exort.button, this.keys.Exort.button, this.keys.Wex.button],
+          casted: false
         },
         DeafeningBlast: {
           name: 'Deafening Blast',
           image: require('@/assets/spells/defeaningblast.svg'),
-          castBtns: [this.keys.Quas.button, this.keys.Wex.button, this.keys.Exort.button]
+          castBtns: [this.keys.Quas.button, this.keys.Wex.button, this.keys.Exort.button],
+          casted: false
         }
       }
     }

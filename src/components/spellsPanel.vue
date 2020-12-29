@@ -52,12 +52,16 @@ export default {
   props: {
       settings: Object,
       allSpells: Object,
-      legacyKey: Boolean
+      statistic: Object,
+      gameSpells: Array,
+      legacyKey: Boolean,
+      castedSpells: Number
   },
   data() {
       return {
           castPanel: [null, null, null],
-          castPanelSpell: [{name: null}, {name: null}]
+          castPanelSpell: [{name: null}, {name: null}],
+          timerCount: 50,
       }
   },
   methods: {
@@ -74,10 +78,28 @@ export default {
         this.castPanel.push(this.settings.Exort.button)
       },
       firstSpellClick() {
-        console.log('First spell click')
+        if (this.castPanelSpell[1].name == null) return
+        this.statistic.spellCasted++
+        // let spellCompleteIndex = null
+        this.gameSpells.forEach((el, ) => {
+            if (this.castPanelSpell[1].name == el.name) {
+                this.statistic.trueSpells++
+                el.casted = true
+                this.gameSpells.splice()
+            }
+        })
       },
       secondSpellClick() {
-        console.log('Second spell click')
+        if (this.castPanelSpell[1].name == null) return
+        this.statistic.spellCasted++
+        // let spellCompleteIndex = null
+        this.gameSpells.forEach((el, ) => {
+            if (this.castPanelSpell[0].name == el.name) {
+                this.statistic.trueSpells++
+                el.casted = true
+                this.gameSpells.splice()
+            }
+        })
       },
       invokeClick() {
         if (this.castPanel[0] == null || this.castPanel[1] == null || this.castPanel[2] == null) {
@@ -99,6 +121,7 @@ export default {
       },
       keyPressed(key) {
         const keyPressedNow = key.key
+        this.statistic.keyPressed++
         if (keyPressedNow.toUpperCase() == this.settings.Quas.button) {
             this.quasClick()
         }else if (keyPressedNow.toUpperCase() == this.settings.Wex.button) {
@@ -141,6 +164,12 @@ export default {
 </script>
 
 <style>
+.timer__line {
+    height: 20px;
+    border-radius: 20px;
+    background-color: red;
+}
+
 .cast__panel {
     display: flex;
     flex-direction: row;

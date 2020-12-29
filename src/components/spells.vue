@@ -26,7 +26,10 @@
 
 export default {
   name: 'Spells',
-  props: ['settings', 'allSpells'],
+    props: {
+      settings: Object,
+      allSpells: Object,
+  },
   data() {
       return {
          
