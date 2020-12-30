@@ -1,43 +1,54 @@
 <template>
     <div class="game">
-        <button v-if="!gameStarted" @click="gameStart">Game start</button>
-        Timer - {{ timerCount }}
-        Cast spells count - {{ castSpells }}
-        Statistic - {{ statistic }}
         <div
-        v-if="gameStarted"
+        v-if="!gameOver"
         >
-            <div 
-            :class="{ casted : gameSpell.casted }"
-            v-for="(gameSpell, i) in gameSpells"
-            :key = i
+            <button v-if="!gameStarted" @click="gameStart">Game start</button>
+            Timer - {{ timerCount }}
+            Cast spells count - {{ castSpells }}
+            Statistic - {{ statistic }}
+            <div
+            v-if="gameStarted"
             >
-                <img :src='gameSpell.image' style="width:50px;" alt="Spell image">
-                {{gameSpell.name}}
+                <div 
+                :class="{ casted : gameSpell.casted }"
+                v-for="(gameSpell, i) in gameSpells"
+                :key = i
+                >
+                    <img :src='gameSpell.image' style="width:50px;" alt="Spell image">
+                    {{gameSpell.name}}
+                </div>
             </div>
+            <div class="timer__line" 
+            v-if="gameStarted && gameMode != 'Endless'"
+            :style="{width: timerLine + '%'}">
+            </div>
+            <button v-if="gameReset" @click="gameCancel">Game reset</button>
+            <SpellsPanel 
+            :settings = settings
+            :allSpells = allSpells
+            :legacyKey = legacyKey
+            :gameSpells = gameSpells
+            :statistic = statistic
+            />
         </div>
-        <div class="timer__line" 
-        v-if="gameStarted && gameMode != 'Endless'"
-        :style="{width: timerLine + '%'}">
-        </div>
-        <button v-if="gameReset" @click="gameCancel">Game reset</button>
-        <SpellsPanel 
-        :settings = settings
-        :allSpells = allSpells
-        :legacyKey = legacyKey
-        :gameSpells = gameSpells
+        <GameEnd 
+        v-if="gameOver"
         :statistic = statistic
         />
+        <button @click="this.gameMode = 'none'" >Restart Game</button>
     </div>
 </template>
 
 <script>
 import SpellsPanel from './spellsPanel.vue'
+import GameEnd from './gameEnd.vue'
 
 export default {
     name: 'Game',
     components: {
-        SpellsPanel
+        SpellsPanel,
+        GameEnd
     }, 
     props: {
         settings: Object,
@@ -50,6 +61,7 @@ export default {
             gameSpells: [],
             gameStarted: false,
             gameReset: false,
+            gameOver: false,
             timer: null,
             timerLine: 100,
             timerCount: 0,
@@ -80,8 +92,6 @@ export default {
                 this.spellCount = this.getRandomInt(1, 3)
             }     
             this.gameSpells = []
-            this.gameStarted = true
-            this.gameReset = true
             while (this.gameSpells.length < this.spellCount ) {
                 let randNum = this.getRandomInt(0, 9)
                 let randSpellKey = Object.keys(this.allSpells)[randNum]
@@ -109,11 +119,23 @@ export default {
                     this.timerLine = newTimerLine
                 }
 
-                if (this.timerCount > 0) {
+                if (this.gameMode == '3xCombo' || this.gameMode == 'Survival') {
+                    if (this.timerCount > 0) {
                     this.timerCount-- 
-                }  else {
-                    this.stopTimer()
+                    }  else {
+                        this.stopTimer()
+                        this.gameEnd()
+                    }
+                } else if (this.gameMode == 'Classic'){
+                    if (this.timerCount < 30) {
+                    this.timerCount++
+                    }  else {
+                        this.stopTimer()
+                        this.gameEnd()
+                    }
                 }
+
+                
             }, 1000)
         },
         stopTimer() {
@@ -121,6 +143,8 @@ export default {
             clearTimeout(this.timer)
         },
         gameStart() {  
+            this.gameStarted = true
+            this.gameReset = true
             this.randomSpell()
             if (this.gameMode == '3xCombo') {
                 this.timerCount = 30
@@ -130,6 +154,9 @@ export default {
                 this.timerCount = 0
             }
             this.startTimer()
+        },
+        gameEnd() {
+            this.gameOver = true
         },
         gameCancel() {
             this.stopTimer()
@@ -156,9 +183,12 @@ export default {
                     castedSpellCount++
                 } 
             });
-            if (castedSpellCount == this.spellCount && this.gameStarted == true && this.statistic.trueSpells == 10 && this.gameMode == 'Classic') {
+            if (castedSpellCount == this.spellCount && this.gameStarted == true && this.gameMode == 'Classic') {
                 // Создать и добавить gameEnd
+                this.randomSpell()
             } else if (castedSpellCount == this.spellCount && this.gameStarted == true && this.gameMode == "Survival") {
+                this.timerCount = arr.length * (3 - (this.statistic.trueSpells * 0.01))
+                this.timerLine = 100
                 this.randomSpell()
                 // Добавить обновление таймера и полоски 
             } else if (castedSpellCount == this.spellCount && this.gameStarted == true && this.gameMode == "3xCombo") {
