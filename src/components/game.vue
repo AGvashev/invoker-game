@@ -3,27 +3,26 @@
         <div
         v-if="!gameOver"
         >
-            <button v-if="!gameStarted" @click="gameStart">Game start</button>
-            Timer - {{ timerCount }}
-            Cast spells count - {{ castSpells }}
-            Statistic - {{ statistic }}
             <div
             v-if="gameStarted"
+            class="game__spells__panel"
             >
                 <div 
+                class="game__spells__block"
                 :class="{ casted : gameSpell.casted }"
                 v-for="(gameSpell, i) in gameSpells"
                 :key = i
                 >
-                    <img :src='gameSpell.image' style="width:50px;" alt="Spell image">
-                    {{gameSpell.name}}
+                    <img class="spells__block__img" :src='gameSpell.image' alt="Spell image">
+                    <span class="spells__block__text">{{gameSpell.name}}</span> 
                 </div>
             </div>
-            <div class="timer__line" 
-            v-if="gameStarted && gameMode != 'Endless'"
+            <div 
+            class="timer__line"
+            v-if="gameStarted && gameMode != 'Endless' && gameMode != 'Classic'"
             :style="{width: timerLine + '%'}">
             </div>
-            <button v-if="gameReset" @click="gameCancel">Game reset</button>
+            
             <SpellsPanel 
             :settings = settings
             :allSpells = allSpells
@@ -36,7 +35,8 @@
         v-if="gameOver"
         :statistic = statistic
         />
-        <button @click="this.gameMode = 'none'" >Restart Game</button>
+        <button class="main__btns" v-if="gameReset" @click="gameCancel">Game reset</button>
+        <button class="main__btns"  v-if="!gameStarted" @click="gameStart">Game start (Press ENTER)</button> 
     </div>
 </template>
 
@@ -55,6 +55,7 @@ export default {
         allSpells: Object,
         legacyKey: Boolean,
         gameMode: String,
+        statistic: Object
     },
     data() {
         return {
@@ -63,15 +64,11 @@ export default {
             gameReset: false,
             gameOver: false,
             timer: null,
+            timerLineTransitionOff: false,
             timerLine: 100,
             timerCount: 0,
             castSpells: 0,
             spellCount: 0,
-            statistic: {
-                keyPressed: 0,
-                spellCasted: 0,
-                trueSpells: 0
-            }
         }
     },
     methods: {
@@ -156,6 +153,7 @@ export default {
             this.startTimer()
         },
         gameEnd() {
+            this.gameReset = false
             this.gameOver = true
         },
         gameCancel() {
@@ -165,15 +163,10 @@ export default {
             this.gameStarted = false
             this.gameReset = false
             this.castSpells = 0
-            this.statistic = {
-                keyPressed: 0,
-                spellCasted: 0,
-                trueSpells: 0
-            }
+            this.statistic.keyPressed = 0 
+            this.statistic.spellCasted = 0 
+            this.statistic.trueSpells = 0 
         }
-    },
-    mounted() {
-
     },
     watch: {
         gameSpells: function (arr) {
@@ -187,11 +180,14 @@ export default {
                 // Создать и добавить gameEnd
                 this.randomSpell()
             } else if (castedSpellCount == this.spellCount && this.gameStarted == true && this.gameMode == "Survival") {
-                this.timerCount = arr.length * (3 - (this.statistic.trueSpells * 0.01))
+                this.timerCount = arr.length * (3 - (Math.floor(this.statistic.trueSpells * 0.01)))
                 this.timerLine = 100
                 this.randomSpell()
                 // Добавить обновление таймера и полоски 
             } else if (castedSpellCount == this.spellCount && this.gameStarted == true && this.gameMode == "3xCombo") {
+                // Добавить gameEnd 
+                this.randomSpell()
+            } else if (castedSpellCount == this.spellCount && this.gameStarted == true && this.gameMode == "Endless") {
                 // Добавить gameEnd 
                 this.randomSpell()
             }
@@ -213,5 +209,39 @@ export default {
 .casted {
     border: 1px solid rgb(9, 255, 0);
     opacity: .5;
+}
+
+.main__btns {
+    margin: 5px;
+    padding: 5px;
+}
+
+.game__spells__panel {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    margin: 50px;
+}
+
+.game__spells__block {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    margin: 5px 10px;
+    padding: 5px;
+}
+
+.spells__block__img {
+    width: 80px;
+}
+
+.spells__block__text {
+    margin: 0 5px;
+    font-size: 20px;
+    text-transform: uppercase;
 }
 </style>

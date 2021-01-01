@@ -83,7 +83,7 @@ export default {
         // let spellCompleteIndex = null
         this.gameSpells.forEach((el, ) => {
             if (this.castPanelSpell[1].name == el.name) {
-                this.statistic.trueSpells++
+                if (el.casted == false ) this.statistic.trueSpells++
                 el.casted = true
                 this.gameSpells.splice()
             }
@@ -95,7 +95,7 @@ export default {
         // let spellCompleteIndex = null
         this.gameSpells.forEach((el, ) => {
             if (this.castPanelSpell[0].name == el.name) {
-                this.statistic.trueSpells++
+                if (el.casted == false ) this.statistic.trueSpells++
                 el.casted = true
                 this.gameSpells.splice()
             }

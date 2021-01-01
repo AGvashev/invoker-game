@@ -1,11 +1,11 @@
 <template>
     <div class="game__end">
-        {{ statistic }}
+      Game over 
+      {{statistic.spellCasted}} spell casted
     </div>
 </template>
 
 <script>
-
 export default {
   name: 'GameEnd',
   props: {

@@ -6,6 +6,7 @@
     <div class="container">
       <div class="app__content">
         <div class="leftside">
+          <div class="settings__block">
             <Settings
             :settings = keys
             />
@@ -14,27 +15,41 @@
             Use legacy key
             </label>
             <div v-if="!legacy" class="buttons">
-              <button @click="settingConfigurate"> Configurate </button>
-              <button @click="settingReset"> Reset </button>
+              <!-- <button @click="settingConfigurate"> Configurate </button> 
+              <button @click="settingReset"> Reset </button> -->
             </div>
+          </div>
+           <div class="statistic__block">
+              <div
+              v-for="( stat, name, index ) in statistic"
+              :key="index"
+              >
+                {{ 
+                  name == 'keyPressed' ? 'Key pressed' :
+                  name == 'spellCasted' ? 'Spell casted' :
+                  name == 'trueSpells' ? 'True spells casted' : ''
+                }}:
+                {{ stat }}
+              </div>
+           </div>
         </div>
         <div class="middleside">
-          Выбери режим игры: {{gameMode}}
+          <h2 v-if="gameMode == 'none'" class="game__mode__title">Select the game mode</h2>
+          <h2 v-if="gameMode != 'none'" class="game__mode__title backtomenu__title">Back to menu</h2>
+          <button v-if="gameMode != 'none'" class="main__menu__btn" @click="gameMode = 'none'">Main menu</button>
           <div v-if="gameMode == 'none'">
-            <button @click="gameMode = 'Survival'">Survival</button>
-            <button @click="gameMode = 'Classic'">Classic</button>
-            <button @click="gameMode = '3xCombo'">3x Combo</button>
-            <button @click="gameMode = 'Endless'">Endless</button>
+            <button class="game__mode__btn" @click="gameMode = 'Survival'">Survival</button>
+            <button class="game__mode__btn" @click="gameMode = 'Classic'">Classic</button>
+            <button class="game__mode__btn" @click="gameMode = '3xCombo'">3x Combo</button>
+            <button class="game__mode__btn" @click="gameMode = 'Endless'">Endless</button>
           </div>
-          
-
-          <button @click="gameMode = 'none'">Main menu</button>
           <Game
           v-if="gameMode != 'none'"
           :gameMode = gameMode
           :settings = keys
           :allSpells = spells
           :legacyKey = legacy
+          :statistic = statistic
            />
         </div>
         <div class="rightside">
@@ -96,6 +111,11 @@ export default {
             }
           },
           spells: {
+          },
+          statistic: {
+              keyPressed: 0,
+              spellCasted: 0,
+              trueSpells: 0
           }
       }
   },
@@ -327,5 +347,45 @@ export default {
   width: 1400px;
   max-width: 98%;
   margin: 0 auto;
+}
+
+.settings__block {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid rgb(212, 212, 212);
+  border-radius: 10px;
+}
+
+.statistic__block {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid rgb(212, 212, 212);
+  border-radius: 10px;
+}
+
+.game__mode__title {
+  text-transform: uppercase;
+}
+
+.rightside {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid rgb(212, 212, 212);
+  border-radius: 10px;
+}
+
+.game__mode__btn {
+  padding: 5px;
+  margin: 5px;
+}
+
+.main__menu__btn {
+  display: inline-block;
+  padding: 5px;
+  margin: 5px;
+}
+
+.backtomenu__title {
+  display: inline-block;
 }
 </style>
